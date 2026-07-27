@@ -133,7 +133,7 @@ dependencies {
 
     // Retrofit & OkHttp
     implementation("com.squareup.retrofit2:retrofit:$retrofit_version")
-    implementation("com.squareup.retrofit2:converter-kotlinx-serialization:$retrofit_version")
+    implementation("com.squareup.retrofit2:converter-kotlinx-serialization-json:$retrofit_version")
     implementation("com.squareup.okhttp3:okhttp:$okhttp_version")
     implementation("com.squareup.okhttp3:logging-interceptor:$okhttp_version")
 
