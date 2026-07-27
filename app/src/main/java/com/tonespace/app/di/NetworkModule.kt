@@ -1,16 +1,16 @@
 package com.tonespace.app.di
 
-import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.squareup.retrofit2.Retrofit
+import com.squareup.retrofit2.converter.gson.GsonConverterFactory
 import com.tonespace.app.data.network.ToneSpaceApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import kotlinx.serialization.json.Json
-import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
@@ -22,11 +22,9 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideJson(): Json = Json {
-        ignoreUnknownKeys = true
-        encodeDefaults = true
-        isLenient = true
-    }
+    fun provideGson(): Gson = GsonBuilder()
+        .setLenient()
+        .create()
 
     @Provides
     @Singleton
@@ -52,12 +50,11 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(client: OkHttpClient, json: Json): Retrofit {
-        val contentType = "application/json".toMediaType()
+    fun provideRetrofit(client: OkHttpClient, gson: Gson): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(client)
-            .addConverterFactory(json.asConverterFactory(contentType))
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
     }
 

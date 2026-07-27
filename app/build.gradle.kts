@@ -1,7 +1,6 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.kotlin.plugin.serialization")
     id("com.google.devtools.ksp")
     id("com.google.gms.google-services")
     id("kotlin-parcelize")
@@ -93,7 +92,6 @@ dependencies {
     val exoplayer_version = "2.19.1"
     val firebase_bom_version = "32.8.0"
     val admob_version = "22.6.0"
-    val serialization_version = "1.6.1"
     val datastore_version = "1.0.0"
     val accompanist_version = "0.32.0"
 
@@ -133,7 +131,7 @@ dependencies {
 
     // Retrofit & OkHttp
     implementation("com.squareup.retrofit2:retrofit:$retrofit_version")
-    implementation("com.squareup.retrofit2:converter-kotlinx-serialization-json:$retrofit_version")
+    implementation("com.squareup.retrofit2:converter-gson:$retrofit_version")
     implementation("com.squareup.okhttp3:okhttp:$okhttp_version")
     implementation("com.squareup.okhttp3:logging-interceptor:$okhttp_version")
 
@@ -161,9 +159,6 @@ dependencies {
 
     // DataStore Preferences
     implementation("androidx.datastore:datastore-preferences:$datastore_version")
-
-    // Serialization
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serialization_version")
 
     // Accompanist (Permissions, System UI Controller)
     implementation("com.google.accompanist:accompanist-permissions:$accompanist_version")

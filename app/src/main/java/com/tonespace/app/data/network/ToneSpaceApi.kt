@@ -7,7 +7,6 @@ import com.tonespace.app.data.model.Playlist
 import com.tonespace.app.data.model.SearchResult
 import com.tonespace.app.data.model.Sound
 import com.tonespace.app.data.model.User
-import kotlinx.serialization.Serializable
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -20,7 +19,6 @@ interface ToneSpaceApi {
     @POST("auth/refresh")
     suspend fun refreshToken(@Header("Authorization") refreshToken: String): Response<ApiResponse<AuthTokens>>
 
-    @Serializable
     data class AuthTokens(
         val accessToken: String,
         val refreshToken: String,
@@ -37,7 +35,6 @@ interface ToneSpaceApi {
         @Query("query") query: String? = null
     ): Response<ApiResponse<SoundListResponse>>
 
-    @Serializable
     data class SoundListResponse(
         val sounds: List<Sound>,
         val nextCursor: String?,
@@ -50,7 +47,6 @@ interface ToneSpaceApi {
     @GET("sounds/{id}/stream")
     suspend fun getStreamUrl(@Path("id") id: String): Response<ApiResponse<StreamResponse>>
 
-    @Serializable
     data class StreamResponse(
         val url: String,
         val expiresAt: Long,
@@ -63,7 +59,6 @@ interface ToneSpaceApi {
         @Body request: UploadSoundRequest
     ): Response<ApiResponse<Sound>>
 
-    @Serializable
     data class UploadSoundRequest(
         val title: String,
         val description: String,
@@ -89,7 +84,6 @@ interface ToneSpaceApi {
         @Path("id") id: String
     ): Response<ApiResponse<LikeResponse>>
 
-    @Serializable
     data class LikeResponse(
         val liked: Boolean,
         val likeCount: Int
@@ -108,7 +102,6 @@ interface ToneSpaceApi {
         @Body request: ShareRequest
     ): Response<ApiResponse<Unit>>
 
-    @Serializable
     data class ShareRequest(
         val platform: String
     )
@@ -121,7 +114,6 @@ interface ToneSpaceApi {
         @Query("limit") limit: Int = 20
     ): Response<ApiResponse<CommentListResponse>>
 
-    @Serializable
     data class CommentListResponse(
         val comments: List<Comment>,
         val nextCursor: String?,
@@ -135,7 +127,6 @@ interface ToneSpaceApi {
         @Body request: AddCommentRequest
     ): Response<ApiResponse<Comment>>
 
-    @Serializable
     data class AddCommentRequest(
         val content: String,
         val parentId: String? = null
@@ -173,7 +164,6 @@ interface ToneSpaceApi {
         @Body request: UpdateProfileRequest
     ): Response<ApiResponse<User>>
 
-    @Serializable
     data class UpdateProfileRequest(
         val displayName: String?,
         val bio: String?,
@@ -187,7 +177,6 @@ interface ToneSpaceApi {
         @Body request: CreatePlaylistRequest
     ): Response<ApiResponse<Playlist>>
 
-    @Serializable
     data class CreatePlaylistRequest(
         val name: String,
         val description: String,
@@ -203,7 +192,6 @@ interface ToneSpaceApi {
         @Body request: UpdatePlaylistRequest
     ): Response<ApiResponse<Playlist>>
 
-    @Serializable
     data class UpdatePlaylistRequest(
         val name: String?,
         val description: String?,
@@ -225,7 +213,6 @@ interface ToneSpaceApi {
         @Body request: AddSoundRequest
     ): Response<ApiResponse<Playlist>>
 
-    @Serializable
     data class AddSoundRequest(
         val soundId: String
     )
@@ -274,7 +261,6 @@ interface ToneSpaceApi {
         @Query("limit") limit: Int = 20
     ): Response<ApiResponse<NotificationListResponse>>
 
-    @Serializable
     data class NotificationListResponse(
         val notifications: List<Notification>,
         val nextCursor: String?,
@@ -282,7 +268,6 @@ interface ToneSpaceApi {
         val unreadCount: Int
     )
 
-    @Serializable
     data class Notification(
         val id: String,
         val type: String,
@@ -310,7 +295,6 @@ interface ToneSpaceApi {
         @Header("Authorization") token: String
     ): Response<ApiResponse<PremiumStatus>>
 
-    @Serializable
     data class PremiumStatus(
         val isPremium: Boolean,
         val expiryDate: Long?,
@@ -323,7 +307,6 @@ interface ToneSpaceApi {
         @Body request: VerifyPurchaseRequest
     ): Response<ApiResponse<PremiumStatus>>
 
-    @Serializable
     data class VerifyPurchaseRequest(
         val purchaseToken: String,
         val productId: String,
@@ -343,14 +326,12 @@ interface ToneSpaceApi {
         @Body request: UploadUrlRequest
     ): Response<ApiResponse<UploadUrlResponse>>
 
-    @Serializable
     data class UploadUrlRequest(
         val fileName: String,
         val contentType: String,
         val size: Long
     )
 
-    @Serializable
     data class UploadUrlResponse(
         val uploadUrl: String,
         val fileUrl: String,
@@ -364,7 +345,6 @@ interface ToneSpaceApi {
         @Body request: ReportRequest
     ): Response<ApiResponse<Unit>>
 
-    @Serializable
     data class ReportRequest(
         val type: String, // "sound", "user", "comment", "playlist"
         val targetId: String,

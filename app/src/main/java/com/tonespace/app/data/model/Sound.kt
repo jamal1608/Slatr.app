@@ -1,131 +1,126 @@
 package com.tonespace.app.data.model
 
-import kotlinx.serialization.Serializable
-
-@Serializable
 data class Sound(
-    val id: String,
-    val title: String,
-    val description: String,
-    val category: SoundCategory,
-    val tags: List<String>,
-    val audioUrl: String,
-    val duration: Int, // seconds
-    val waveformData: List<Float>?, // for visualization
-    val coverImageUrl: String?,
-    val creatorId: String,
-    val creatorName: String,
-    val creatorAvatarUrl: String?,
-    val playCount: Long,
-    val likeCount: Int,
-    val downloadCount: Int,
-    val shareCount: Int,
-    val isPremium: Boolean,
-    val licenseType: LicenseType,
-    val createdAt: Long,
-    val updatedAt: Long,
-    val status: SoundStatus = SoundStatus.PUBLISHED
+    val id: String = "",
+    val title: String = "",
+    val description: String = "",
+    val category: SoundCategory = SoundCategory.CUSTOM,
+    val tags: List<String> = emptyList(),
+    val audioUrl: String = "",
+    val duration: Int = 0,
+    val waveformData: List<Float>? = null,
+    val coverImageUrl: String? = null,
+    val creatorId: String = "",
+    val creatorName: String = "",
+    val creatorAvatarUrl: String? = null,
+    val playCount: Long = 0,
+    val likeCount: Int = 0,
+    val downloadCount: Int = 0,
+    val shareCount: Int = 0,
+    val isPremium: Boolean = false,
+    val licenseType: LicenseType = LicenseType.ROYALTY_FREE,
+    val createdAt: Long = 0,
+    val updatedAt: Long = 0,
+    val status: SoundStatus = SoundStatus.PUBLISHED,
+    val featured: Boolean = false
 )
 
-enum class SoundCategory(@Serializable serialName: String) {
-    @SerialName("ringtones") RINGTONES,
-    @SerialName("notifications") NOTIFICATIONS,
-    @SerialName("alarms") ALARMS,
-    @SerialName("ui_sounds") UI_SOUNDS,
-    @SerialName("game_sounds") GAME_SOUNDS,
-    @SerialName("nature") NATURE,
-    @SerialName("music_loops") MUSIC_LOOPS,
-    @SerialName("voice") VOICE,
-    @SerialName("funny") FUNNY,
-    @SerialName("memes") MEMES,
-    @SerialName("custom") CUSTOM
+enum class SoundCategory {
+    RINGTONES,
+    NOTIFICATIONS,
+    ALARMS,
+    UI_SOUNDS,
+    GAME_SOUNDS,
+    NATURE,
+    MUSIC_LOOPS,
+    VOICE,
+    FUNNY,
+    MEMES,
+    WALLPAPERS,
+    CUSTOM
 }
 
-enum class LicenseType(@Serializable serialName: String) {
-    @SerialName("royalty_free") ROYALTY_FREE,
-    @SerialName("creative_commons") CREATIVE_COMMONS,
-    @SerialName("custom") CUSTOM,
-    @SerialName("premium") PREMIUM
+enum class LicenseType {
+    ROYALTY_FREE,
+    CREATIVE_COMMONS,
+    CUSTOM,
+    PREMIUM
 }
 
-enum class SoundStatus(@Serializable serialName: String) {
-    @SerialName("draft") DRAFT,
-    @SerialName("pending_review") PENDING_REVIEW,
-    @SerialName("published") PUBLISHED,
-    @SerialName("rejected") REJECTED,
-    @SerialName("removed") REMOVED
+enum class SoundStatus {
+    DRAFT,
+    PENDING_REVIEW,
+    PUBLISHED,
+    REJECTED,
+    REMOVED
 }
 
-@Serializable
 data class User(
-    val uid: String,
-    val email: String,
-    val displayName: String,
-    val photoUrl: String?,
-    val bio: String?,
-    val isCreator: Boolean,
-    val isPremium: Boolean,
-    val premiumExpiry: Long?,
-    val createdAt: Long,
-    val soundCount: Int,
-    val totalPlays: Long,
-    val followersCount: Int,
-    val followingCount: Int
+    val uid: String = "",
+    val email: String = "",
+    val displayName: String = "",
+    val photoUrl: String? = null,
+    val bio: String? = null,
+    val isCreator: Boolean = false,
+    val isPremium: Boolean = false,
+    val premiumExpiry: Long? = null,
+    val createdAt: Long = 0,
+    val soundCount: Int = 0,
+    val totalPlays: Long = 0,
+    val followersCount: Int = 0,
+    val followingCount: Int = 0,
+    val balance: Long = 0,
+    val totalEarnings: Long = 0,
+    val totalDownloads: Long = 0
 )
 
-@Serializable
 data class Comment(
-    val id: String,
-    val soundId: String,
-    val userId: String,
-    val userName: String,
-    val userAvatarUrl: String?,
-    val content: String,
-    val createdAt: Long,
-    val likeCount: Int,
+    val id: String = "",
+    val soundId: String = "",
+    val userId: String = "",
+    val userName: String = "",
+    val userAvatarUrl: String? = null,
+    val content: String = "",
+    val createdAt: Long = 0,
+    val likeCount: Int = 0,
     val replies: List<Comment> = emptyList()
 )
 
-@Serializable
 data class Playlist(
-    val id: String,
-    val name: String,
-    val description: String,
-    val coverImageUrl: String?,
-    val soundIds: List<String>,
-    val creatorId: String,
-    val creatorName: String,
-    val isPublic: Boolean,
-    val createdAt: Long,
-    val updatedAt: Long
+    val id: String = "",
+    val name: String = "",
+    val description: String = "",
+    val coverImageUrl: String? = null,
+    val soundIds: List<String> = emptyList(),
+    val creatorId: String = "",
+    val creatorName: String = "",
+    val isPublic: Boolean = true,
+    val createdAt: Long = 0,
+    val updatedAt: Long = 0
 )
 
-@Serializable
 data class CategoryStats(
-    val category: SoundCategory,
-    val soundCount: Int,
-    val totalPlays: Long
+    val category: SoundCategory = SoundCategory.CUSTOM,
+    val soundCount: Int = 0,
+    val totalPlays: Long = 0
 )
 
-@Serializable
 data class SearchResult(
-    val sounds: List<Sound>,
-    val users: List<User>,
-    val playlists: List<Playlist>,
-    val hasMore: Boolean,
-    val nextCursor: String?
+    val sounds: List<Sound> = emptyList(),
+    val users: List<User> = emptyList(),
+    val playlists: List<Playlist> = emptyList(),
+    val hasMore: Boolean = false,
+    val nextCursor: String? = null
 )
 
-@Serializable
 data class ApiResponse<T>(
-    val success: Boolean,
-    val data: T?,
-    val error: ApiError?
+    val success: Boolean = false,
+    val data: T? = null,
+    val error: ApiError? = null
 )
 
-@Serializable
 data class ApiError(
-    val code: String,
-    val message: String,
+    val code: String = "",
+    val message: String = "",
     val details: Map<String, String>? = null
 )
