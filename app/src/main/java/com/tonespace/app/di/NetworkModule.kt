@@ -2,8 +2,6 @@ package com.tonespace.app.di
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.squareup.retrofit2.Retrofit
-import com.squareup.retrofit2.converter.gson.GsonConverterFactory
 import com.tonespace.app.data.network.ToneSpaceApi
 import dagger.Module
 import dagger.Provides
@@ -50,17 +48,17 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(client: OkHttpClient, gson: Gson): Retrofit {
-        return Retrofit.Builder()
+    fun provideRetrofit(client: OkHttpClient, gson: Gson): retrofit2.Retrofit {
+        return retrofit2.Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(client)
-            .addConverterFactory(GsonConverterFactory.create(gson))
+            .addConverterFactory(retrofit2.converter.gson.GsonConverterFactory.create(gson))
             .build()
     }
 
     @Provides
     @Singleton
-    fun provideApi(retrofit: Retrofit): ToneSpaceApi {
+    fun provideApi(retrofit: retrofit2.Retrofit): ToneSpaceApi {
         return retrofit.create(ToneSpaceApi::class.java)
     }
 }
