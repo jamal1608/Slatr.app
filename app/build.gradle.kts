@@ -65,7 +65,7 @@ android {
         kotlinCompilerExtensionVersion = "1.5.8"
     }
 
-    packagingOptions {
+    packaging {
         resources {
             excludes += listOf("META-INF/*.kotlin_module")
         }
@@ -76,11 +76,6 @@ android {
         viewBinding = false
         dataBinding = false
     }
-
-    // GitHub Actions doesn't need this, but good for local
-    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
-        kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
-    }
 }
 
 dependencies {
@@ -88,12 +83,10 @@ dependencies {
     val core_ktx_version = "1.12.0"
     val activity_compose_version = "1.8.2"
     val lifecycle_version = "2.7.0"
-    val material3_version = "1.2.1"
     val compose_bom_version = "2024.02.00"
     val hilt_version = "2.48"
     val room_version = "2.6.1"
     val coroutines_version = "1.7.3"
-    val flow_version = "1.0.1"
     val retrofit_version = "2.9.0"
     val okhttp_version = "4.12.0"
     val coil_version = "2.5.0"
