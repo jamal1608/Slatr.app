@@ -21,14 +21,15 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    signingConfigs {
-        create("release") {
-            storeFile = file(System.getenv("KEYSTORE_PATH") ?: "")
-            storePassword = System.getenv("KEYSTORE_PASSWORD")
-            keyAlias = System.getenv("KEY_ALIAS")
-            keyPassword = System.getenv("KEY_PASSWORD")
-        }
-    }
+    // Uncomment for release signing when ready:
+    // signingConfigs {
+    //     create("release") {
+    //         storeFile = file(System.getenv("KEYSTORE_PATH") ?: "release.jks")
+    //         storePassword = System.getenv("KEYSTORE_PASSWORD")
+    //         keyAlias = System.getenv("KEY_ALIAS")
+    //         keyPassword = System.getenv("KEY_PASSWORD")
+    //     }
+    // }
 
     buildTypes {
         release {
@@ -38,15 +39,15 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("release")
-            buildConfigField("String", "ADMOB_APP_ID", "\"${System.getenv(\"ADMOB_APP_ID\")}\"")
+            // Uncomment when AdMob is configured:
+            // signingConfig = signingConfigs.getByName("release")
+            // buildConfigField("String", "ADMOB_APP_ID", "\"${System.getenv(\"ADMOB_APP_ID\")}\"")
         }
         debug {
             isDebuggable = true
             isMinifyEnabled = false
             applicationIdSuffix = ".debug"
             versionNameSuffix = "-debug"
-            buildConfigField("String", "ADMOB_APP_ID", "\"ca-app-pub-3940256099942544~3347511713\"") // Test ID
         }
     }
 

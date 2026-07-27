@@ -24,6 +24,8 @@ object Constants {
     const val EARN_RATE_PER_DOWNLOAD = 0.01
     const val EARN_RATE_PER_REWARDED_AD = 0.05
 
+    // Test Ad IDs (safe for testing, will show test ads)
+    const val ADMOB_APP_ID = "ca-app-pub-3940256099942544~3347511713"
     const val ADMOB_BANNER_UNIT_ID = "ca-app-pub-3940256099942544/6300978111"
     const val ADMOB_INTERSTITIAL_UNIT_ID = "ca-app-pub-3940256099942544/1033173712"
     const val ADMOB_REWARDED_UNIT_ID = "ca-app-pub-3940256099942544/5224354917"
