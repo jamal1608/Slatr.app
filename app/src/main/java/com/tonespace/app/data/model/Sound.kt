@@ -1,6 +1,6 @@
 package com.tonespace.app.data.model
 
-data class Sound(
+data class Sound @JvmOverloads constructor(
     val id: String = "",
     val title: String = "",
     val description: String = "",
@@ -18,6 +18,7 @@ data class Sound(
     val downloadCount: Int = 0,
     val shareCount: Int = 0,
     val isPremium: Boolean = false,
+    val isLiked: Boolean = false,
     val licenseType: LicenseType = LicenseType.ROYALTY_FREE,
     val createdAt: Long = 0,
     val updatedAt: Long = 0,
@@ -55,7 +56,7 @@ enum class SoundStatus {
     REMOVED
 }
 
-data class User(
+data class User @JvmOverloads constructor(
     val uid: String = "",
     val email: String = "",
     val displayName: String = "",
@@ -74,7 +75,7 @@ data class User(
     val totalDownloads: Long = 0
 )
 
-data class Comment(
+data class Comment @JvmOverloads constructor(
     val id: String = "",
     val soundId: String = "",
     val userId: String = "",
@@ -86,7 +87,7 @@ data class Comment(
     val replies: List<Comment> = emptyList()
 )
 
-data class Playlist(
+data class Playlist @JvmOverloads constructor(
     val id: String = "",
     val name: String = "",
     val description: String = "",
@@ -99,13 +100,13 @@ data class Playlist(
     val updatedAt: Long = 0
 )
 
-data class CategoryStats(
+data class CategoryStats @JvmOverloads constructor(
     val category: SoundCategory = SoundCategory.CUSTOM,
     val soundCount: Int = 0,
     val totalPlays: Long = 0
 )
 
-data class SearchResult(
+data class SearchResult @JvmOverloads constructor(
     val sounds: List<Sound> = emptyList(),
     val users: List<User> = emptyList(),
     val playlists: List<Playlist> = emptyList(),
@@ -113,13 +114,13 @@ data class SearchResult(
     val nextCursor: String? = null
 )
 
-data class ApiResponse<T>(
+data class ApiResponse<T> @JvmOverloads constructor(
     val success: Boolean = false,
     val data: T? = null,
     val error: ApiError? = null
 )
 
-data class ApiError(
+data class ApiError @JvmOverloads constructor(
     val code: String = "",
     val message: String = "",
     val details: Map<String, String>? = null

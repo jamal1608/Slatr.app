@@ -151,7 +151,7 @@ fun WalletScreen(
                 Spacer(modifier = Modifier.height(12.dp))
                 Button(
                     onClick = {
-                        val cents = (withdrawalAmount.toDoubleOrNull() ?: 0.0 * 100).toLong()
+                        val cents = ((withdrawalAmount.toDoubleOrNull() ?: 0.0) * 100).toLong()
                         viewModel.requestWithdrawal(cents)
                         withdrawalAmount = ""
                     },

@@ -94,7 +94,20 @@ class SoundRepository @Inject constructor(
     suspend fun getSoundById(id: String): Result<Sound?> = withContext(Dispatchers.IO) {
         try {
             val cached = soundDao.getSoundById(id)
-            if (cached != null) return@withContext Result.success(null)
+            if (cached != null) {
+                val sound = Sound(
+                    id = cached.id, title = cached.title, description = cached.description,
+                    category = SoundCategory.valueOf(cached.category),
+                    tags = cached.tags.split(",").filter { it.isNotBlank() },
+                    audioUrl = cached.audioUrl, duration = cached.duration,
+                    coverImageUrl = cached.coverImageUrl, creatorId = cached.creatorId,
+                    creatorName = cached.creatorName, creatorAvatarUrl = cached.creatorAvatarUrl,
+                    playCount = cached.playCount, likeCount = cached.likeCount,
+                    downloadCount = cached.downloadCount, isPremium = cached.isPremium,
+                    isLiked = cached.isLiked, createdAt = cached.createdAt
+                )
+                return@withContext Result.success(sound)
+            }
 
             val doc = soundsCollection.document(id).get().await()
             val sound = doc.toObject(Sound::class.java)

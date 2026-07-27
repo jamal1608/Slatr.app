@@ -35,10 +35,12 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             soundRepository.fetchTrendingSounds()
                 .onFailure { _uiState.value = _uiState.value.copy(error = it.message, isLoading = false) }
-
+        }
+        viewModelScope.launch {
             soundRepository.fetchNewSounds()
                 .onFailure { _uiState.value = _uiState.value.copy(error = it.message, isLoading = false) }
-
+        }
+        viewModelScope.launch {
             soundRepository.fetchFeaturedSounds()
                 .onFailure { _uiState.value = _uiState.value.copy(error = it.message, isLoading = false) }
         }
@@ -46,7 +48,18 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             soundRepository.getTrendingSounds()
                 .catch { e -> _uiState.value = _uiState.value.copy(error = e.message) }
-                .collect { sounds -> _uiState.value = _uiState.value.copy(trendingSounds = sounds, isLoading = false) }
+                .collect { sounds ->
+                    _uiState.value = _uiState.value.copy(
+                        trendingSounds = sounds,
+                        isLoading = false
+                    )
+                }
+        }
+
+        viewModelScope.launch {
+            soundRepository.getSoundsByCategory(com.tonespace.app.data.model.SoundCategory.CUSTOM)
+                .catch { }
+                .collect { sounds -> _uiState.value = _uiState.value.copy(newSounds = sounds.take(10)) }
         }
     }
 
