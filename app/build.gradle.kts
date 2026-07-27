@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android")
     // Uncomment after creating Firebase project and adding google-services.json:
     // id("com.google.gms.google-services")
     id("kotlin-parcelize")
@@ -58,7 +59,7 @@ android {
 
     kotlinOptions {
         jvmTarget = "17"
-        freeCompilerArgs += listOf("-Xopt-in=kotlin.RequiresOptIn")
+        freeCompilerArgs += listOf("-opt-in=kotlin.RequiresOptIn")
     }
 
     composeOptions {
