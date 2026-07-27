@@ -10,8 +10,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven { url = uri("https://maven.google.com") }
     }
 }
-rootProject.name = "ToneShare"
+rootProject.name = "ToneSpace"
 include(":app")
