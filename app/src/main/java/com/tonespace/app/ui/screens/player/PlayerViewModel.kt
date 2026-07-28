@@ -3,7 +3,7 @@ package com.tonespace.app.ui.screens.player
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.tonespace.app.data.local.entity.SoundEntity
+import com.tonespace.app.data.model.Sound
 import com.tonespace.app.data.repository.SoundRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class PlayerUiState(
-    val currentSound: SoundEntity? = null,
+    val currentSound: Sound? = null,
     val isPlaying: Boolean = false,
     val currentPosition: Int = 0,
     val duration: Int = 0,
@@ -30,7 +30,7 @@ class PlayerViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(PlayerUiState())
     val uiState: StateFlow<PlayerUiState> = _uiState
 
-    private var playQueue: List<SoundEntity> = emptyList()
+    private var playQueue: List<Sound> = emptyList()
     private var currentIndex: Int = 0
 
     fun loadSound(soundId: String) {
@@ -51,7 +51,7 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
-    fun setQueue(sounds: List<SoundEntity>, startIndex: Int) {
+    fun setQueue(sounds: List<Sound>, startIndex: Int) {
         playQueue = sounds
         currentIndex = startIndex
         if (sounds.isNotEmpty()) {

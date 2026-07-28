@@ -55,6 +55,7 @@ import coil.compose.AsyncImage
 import com.tonespace.app.ui.components.LoadingScreen
 import com.tonespace.app.ui.components.WaveformPlaceholder
 import com.tonespace.app.util.AudioUtils
+import androidx.compose.ui.platform.LocalContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -70,6 +71,7 @@ fun PlayerScreen(
     }
 
     val sound = uiState.currentSound ?: return
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -240,8 +242,7 @@ fun PlayerScreen(
                     }
                 } else {
                     OutlinedButton(onClick = {
-                        val context = androidx.compose.ui.platform.LocalContext.current
-                        com.tonespace.app.util.AudioUtils.setAsRingtone(
+                        AudioUtils.setAsRingtone(
                             context, sound.audioUrl, sound.title
                         )
                     }) {
