@@ -63,7 +63,7 @@ private val LightColorScheme = lightColorScheme(
 )
 
 @Composable
-fun ToneShareTheme(
+fun ToneSpaceTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {

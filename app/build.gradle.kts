@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.kapt")
     id("com.google.dagger.hilt.android")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -22,10 +23,26 @@ android {
         release {
             isMinifyEnabled = false
             isShrinkResources = false
+            val keystoreFile = file("release.jks")
+            if (keystoreFile.exists()) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
         debug {
             isDebuggable = true
             applicationIdSuffix = ".debug"
+        }
+    }
+
+    signingConfigs {
+        create("release") {
+            val keystoreFile = file("release.jks")
+            if (keystoreFile.exists()) {
+                storeFile = keystoreFile
+                storePassword = System.getenv("KEYSTORE_PASSWORD") ?: ""
+                keyAlias = System.getenv("KEY_ALIAS") ?: ""
+                keyPassword = System.getenv("KEY_PASSWORD") ?: ""
+            }
         }
     }
 
@@ -86,7 +103,7 @@ dependencies {
     // ExoPlayer
     implementation("com.google.android.exoplayer:exoplayer:2.19.1")
 
-    // Firebase (comment out google-services plugin if needed)
+    // Firebase
     implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-auth-ktx")
