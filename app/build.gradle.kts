@@ -36,7 +36,6 @@ android {
         debug {
             isDebuggable = true
             applicationIdSuffix = ".debug"
-            signingConfig = signingConfigs.getByName("debugKeystore")
         }
     }
 

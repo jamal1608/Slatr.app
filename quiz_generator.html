@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz Generator - Lecture Notes to MCQ</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; padding: 2rem; }
+  .container { max-width: 900px; margin: 0 auto; }
+  h1 { text-align: center; font-size: 1.8rem; margin-bottom: 0.5rem; color: #38bdf8; }
+  .subtitle { text-align: center; color: #94a3b8; margin-bottom: 2rem; font-size: 0.95rem; }
+  label { display: block; font-weight: 600; margin-bottom: 0.5rem; color: #cbd5e1; }
+  textarea { width: 100%; height: 300px; padding: 1rem; border: 2px solid #334155; border-radius: 10px; background: #1e293b; color: #e2e8f0; font-size: 0.95rem; resize: vertical; font-family: inherit; }
+  textarea:focus { outline: none; border-color: #38bdf8; }
+  .btn-row { display: flex; gap: 1rem; margin-top: 1rem; justify-content: center; flex-wrap: wrap; }
+  button { padding: 0.75rem 2rem; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; }
+  button:hover { transform: translateY(-1px); }
+  .btn-gen { background: linear-gradient(135deg, #38bdf8, #818cf8); color: #0f172a; }
+  .btn-gen:hover { box-shadow: 0 4px 20px rgba(56,189,248,0.4); }
+  .btn-copy { background: #334155; color: #e2e8f0; }
+  .btn-copy:hover { background: #475569; }
+  .btn-clear { background: #44171a; color: #fca5a5; }
+  .btn-clear:hover { background: #6b2128; }
+  #output { margin-top: 2rem; display: none; }
+  #output pre { background: #1e293b; border: 2px solid #334155; border-radius: 10px; padding: 1.5rem; white-space: pre-wrap; font-family: 'Cascadia Code', 'Fira Code', monospace; font-size: 0.88rem; line-height: 1.7; color: #e2e8f0; max-height: 600px; overflow-y: auto; }
+  .stats { text-align: center; color: #64748b; margin-top: 1rem; font-size: 0.85rem; }
+  .rules { background: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 1rem 1.5rem; margin-bottom: 1.5rem; font-size: 0.85rem; color: #94a3b8; }
+  .rules strong { color: #38bdf8; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Quiz Generator</h1>
+  <p class="subtitle">Paste lecture notes below to generate 10 multiple-choice questions</p>
+
+  <div class="rules">
+    <strong>Output Format:</strong> 10 questions, 4 options each (A-D), with ANSWER and EXPLANATION tags.
+    Plain text only - no LaTeX. Formulas use standard symbols (pi, sqrt, lambda, etc).
+  </div>
+
+  <label for="notes">Lecture Notes:</label>
+  <textarea id="notes" placeholder="Paste your lecture notes here...
+
+Tip: Use section headers ending with : or starting with # to organize topics.
+Formulas like T = 2pi*sqrt(L/g) are automatically detected.
+Definitions like 'X is a process that...' are also detected.
+
+Paste your content and click Generate Quiz."></textarea>
+
+  <div class="btn-row">
+    <button class="btn-gen" onclick="generateQuiz()">Generate Quiz</button>
+    <button class="btn-copy" onclick="copyOutput()">Copy to Clipboard</button>
+    <button class="btn-clear" onclick="clearAll()">Clear</button>
+  </div>
+
+  <div id="output">
+    <pre id="quizText"></pre>
+    <p class="stats" id="stats"></p>
+  </div>
+</div>
+
+<script>
+function generateQuiz() {
+  const notes = document.getElementById('notes').value.trim();
+  if (!notes) { alert('Please paste your lecture notes first.'); return; }
+
+  const topics = extractTopics(notes);
+  const formulas = findFormulas(notes);
+  const definitions = findDefinitions(notes);
+  const keyTerms = findKeyTerms(notes);
+
+  const questions = [];
+  const usedTexts = new Set();
+
+  // Generate formula questions
+  for (const f of formulas) {
+    if (questions.length >= 10) break;
+    const parts = f.split('=').map(s => s.trim());
+    if (parts.length !== 2) continue;
+    const varName = parts[0];
+    const expr = parts[1];
+    const qText = `In the formula ${f.trim()}, what does '${varName}' typically represent?`;
+    if (usedTexts.has(qText)) continue;
+    usedTexts.add(qText);
+    const opts = shuffle([
+      'The dependent variable being solved for',
+      'A constant of proportionality',
+      'The independent input variable',
+      'An error or correction term'
+    ]);
+    questions.push({
+      q: qText,
+      opts: opts,
+      answer: opts[0],
+      explanation: `In the formula ${f.trim()}, ${varName} is the dependent variable that is expressed in terms of ${expr}.`
+    });
+  }
+
+  // Generate definition questions
+  for (const [term, defn] of definitions) {
+    if (questions.length >= 10) break;
+    const qText = `Which of the following best describes '${term.trim()}'?`;
+    if (usedTexts.has(qText)) continue;
+    usedTexts.add(qText);
+    const wrongOpts = [
+      'A type of measurement unit used in physics',
+      'A mathematical operator for differentiation',
+      'A physical constant with fixed value'
+    ];
+    const opts = shuffle([defn.trim(), ...wrongOpts]);
+    questions.push({
+      q: qText,
+      opts: opts,
+      answer: defn.trim(),
+      explanation: `According to the lecture, ${term.trim()} is defined as: ${defn.trim()}.`
+    });
+  }
+
+  // Generate key term questions
+  for (const term of keyTerms) {
+    if (questions.length >= 10) break;
+    if (term.length < 4 || term.length > 50) continue;
+    const qText = `What is the significance of '${term.trim()}' in this lecture?`;
+    if (usedTexts.has(qText)) continue;
+    usedTexts.add(qText);
+    const opts = shuffle([
+      'It is a key concept discussed in the material',
+      'It is a unit of measurement',
+      'It is a mathematical proof technique',
+      'It is an experimental apparatus'
+    ]);
+    questions.push({
+      q: qText,
+      opts: opts,
+      answer: 'It is a key concept discussed in the material',
+      explanation: `'${term.trim()}' is an important term highlighted in the lecture notes.`
+    });
+  }
+
+  // Generate topic-based questions
+  for (const topic of topics) {
+    if (questions.length >= 10) break;
+    const qText = `The lecture section '${topic.title}' primarily covers:`;
+    if (usedTexts.has(qText)) continue;
+    usedTexts.add(qText);
+    const snippet = topic.content[0] ? topic.content[0].substring(0, 80) : topic.title;
+    const opts = shuffle([
+      snippet + '...',
+      'Historical context and background',
+      'Advanced mathematical derivations',
+      'Laboratory experimental procedures'
+    ]);
+    questions.push({
+      q: qText,
+      opts: opts,
+      answer: snippet + '...',
+      explanation: `The section '${topic.title}' focuses on the content described.`
+    });
+  }
+
+  // Fill remaining with general comprehension questions
+  const generalTemplates = [
+    { q: 'Which study strategy would best help master this lecture material?', opts: ['Active recall and spaced repetition', 'Reading notes once quickly', 'Highlighting all text', 'Memorizing without understanding'], a: 'Active recall and spaced repetition', exp: 'Active recall with spaced repetition is the most effective study technique for long-term retention.' },
+    { q: 'What is the primary purpose of reviewing lecture notes after class?', opts: ['To reinforce learning and fill gaps in understanding', 'To rewrite everything verbatim', 'To memorize every word', 'To prepare for a different subject'], a: 'To reinforce learning and fill gaps in understanding', exp: 'Post-lecture review helps consolidate memory and identify areas needing clarification.' },
+    { q: 'When encountering an unfamiliar term in lecture notes, you should:', opts: ['Look up the definition and relate it to context', 'Skip it and move on', 'Memorize the spelling only', 'Ignore it as it will not be tested'], a: 'Look up the definition and relate it to context', exp: 'Understanding terms in context builds deeper comprehension.' },
+    { q: 'How should formulas in lecture notes be studied effectively?', opts: ['Practice deriving and applying them', 'Only memorize the final form', 'Skip all mathematical content', 'Copy them without understanding'], a: 'Practice deriving and applying them', exp: 'Understanding how formulas are derived and when to apply them leads to true mastery.' },
+  ];
+
+  for (const g of generalTemplates) {
+    if (questions.length >= 10) break;
+    if (usedTexts.has(g.q)) continue;
+    usedTexts.add(g.q);
+    questions.push({ q: g.q, opts: shuffle([...g.opts]), answer: g.a, explanation: g.exp });
+  }
+
+  // Format output
+  let output = '';
+  for (let i = 0; i < questions.length; i++) {
+    const q = questions[i];
+    const answerLetter = String.fromCharCode(65 + q.opts.indexOf(q.answer));
+    output += `Q${i+1}: ${q.q}\n`;
+    output += `A: ${q.opts[0]}\n`;
+    output += `B: ${q.opts[1]}\n`;
+    output += `C: ${q.opts[2]}\n`;
+    output += `D: ${q.opts[3]}\n`;
+    output += `ANSWER: ${answerLetter}\n`;
+    output += `EXPLANATION: ${q.explanation}\n\n`;
+  }
+
+  document.getElementById('quizText').textContent = output.trim();
+  document.getElementById('output').style.display = 'block';
+  document.getElementById('stats').textContent = `Generated ${questions.length} questions from ${topics.length} topic(s), ${formulas.length} formula(s), ${definitions.length} definition(s), and ${keyTerms.length} key term(s).`;
+}
+
+function extractTopics(notes) {
+  const topics = [];
+  let current = { title: 'General', content: [] };
+  const lines = notes.split('\n');
+  for (const line of lines) {
+    const s = line.trim();
+    if (!s) continue;
+    if (s.endsWith(':') || s.startsWith('#')) {
+      if (current.content.length) topics.push(current);
+      current = { title: s.replace(/^#+\s*/, '').replace(/:$/, '').trim(), content: [] };
+    } else {
+      current.content.push(s);
+    }
+  }
+  if (current.content.length) topics.push(current);
+  return topics;
+}
+
+function findFormulas(text) {
+  const matches = text.match(/[A-Za-z]\s*=\s*[^,;\n]+/g) || [];
+  return [...new Set(matches)].slice(0, 5);
+}
+
+function findDefinitions(text) {
+  const patterns = [
+    /([A-Z][a-zA-Z\s]+)\s+is\s+(?:a|an|the)\s+(.+?)(?:\.|$)/gm,
+    /([A-Z][a-zA-Z\s]+)\s+refers to\s+(.+?)(?:\.|$)/gm,
+    /([A-Z][a-zA-Z\s]+)\s+means\s+(.+?)(?:\.|$)/gm
+  ];
+  const defs = [];
+  for (const p of patterns) {
+    let m;
+    while ((m = p.exec(text)) !== null) {
+      if (m[1].trim().length > 2 && m[1].trim().length < 40) {
+        defs.push([m[1].trim(), m[2].trim()]);
+      }
+    }
+  }
+  return defs.slice(0, 5);
+}
+
+function findKeyTerms(text) {
+  const bold = (text.match(/\*\*([^*]+)\*\*/g) || []).map(s => s.replace(/\*\*/g, ''));
+  const paren = (text.match(/\(([^)]{3,45})\)/g) || []).map(s => s.slice(1, -1));
+  return [...new Set([...bold, ...paren])].slice(0, 5);
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function copyOutput() {
+  const text = document.getElementById('quizText').textContent;
+  if (!text) { alert('Generate a quiz first.'); return; }
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.querySelector('.btn-copy');
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy to Clipboard', 1500);
+  });
+}
+
+function clearAll() {
+  document.getElementById('notes').value = '';
+  document.getElementById('quizText').textContent = '';
+  document.getElementById('output').style.display = 'none';
+  document.getElementById('stats').textContent = '';
+}
+</script>
+</body>
+</html>
